@@ -1,6 +1,7 @@
 package com.gal.jobs
 
 import com.gal.core.GameClock
+import io.github.cdimascio.dotenv.dotenv
 import kotlinx.coroutines.*
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.seconds
@@ -68,8 +69,26 @@ class WorldTicker(
     fun getCurrentClock(): GameClock = currentClock
 
     companion object {
+        // Load .env file if it exists
+        private val dotenv by lazy {
+            try {
+                dotenv {
+                    ignoreIfMissing = true
+                }
+            } catch (e: Exception) {
+                null
+            }
+        }
+        
         private fun getEnvLong(key: String, default: Long): Long {
-            return System.getenv(key)?.toLongOrNull() ?: default
+            // Check system environment first
+            System.getenv(key)?.toLongOrNull()?.let { return it }
+            
+            // Check .env file
+            dotenv?.get(key)?.toLongOrNull()?.let { return it }
+            
+            // Return default
+            return default
         }
     }
 }

@@ -62,15 +62,18 @@ sudo systemctl status postgresql
 sudo -u postgres psql
 
 # Create database and user (run these commands in psql prompt)
-CREATE DATABASE gal;
-CREATE USER gal WITH PASSWORD 'gal';
+CREATE USER gal WITH ENCRYPTED PASSWORD 'gal';
+CREATE DATABASE gal OWNER gal;
 GRANT ALL PRIVILEGES ON DATABASE gal TO gal;
+GRANT ALL ON SCHEMA public TO gal;
 \q
 
 # Test connection
 psql -U gal -d gal -h localhost -W
 # Enter password: gal
 ```
+
+**Note:** Setting the database owner to `gal` and granting schema permissions ensures the user can create tables and run migrations without permission issues.
 
 To allow local connections, edit PostgreSQL configuration:
 
@@ -136,15 +139,114 @@ Expected response:
 
 To stop the server, press `Ctrl+C` in the terminal where it's running.
 
-## Step 8: Configure Environment Variables (Optional)
+## Step 8: Import Airport Data (Optional)
 
-For production or custom configurations, create a `.env` file or export variables:
+To enable the airport-related API endpoints with real data, you can import airport information from the OurAirports dataset.
+
+### Download the Dataset
+
+```bash
+# Download the OurAirports CSV
+curl -o airports.csv https://davidmegginson.github.io/ourairports-data/airports.csv
+```
+
+### Run the Importer
+
+You can configure the importer using a `.env` file or environment variables:
+
+**Option 1: Using .env file (recommended)**
+
+```bash
+# Copy the example .env file
+cp .env.example .env
+
+# Edit .env and set the CSV path
+nano .env
+# Add this line: IMPORT_AIRPORTS_CSV=/home/youruser/projects/global-airline-league/airports.csv
+
+# Run the import (reads from .env file)
+./gradlew :backend:jobs:importAirports
+```
+
+**Option 2: Using environment variables**
+
+```bash
+# Set environment variables
+export DB_URL="jdbc:postgresql://localhost:5432/gal"
+export DB_USER="gal"
+export DB_PASSWORD="gal"
+export IMPORT_AIRPORTS_CSV="$(pwd)/airports.csv"
+
+# Run the import
+./gradlew :backend:jobs:importAirports
+```
+
+The import process will:
+- Read the CSV file in streaming mode (memory efficient)
+- Skip rows with missing essential fields
+- Insert airports in batches (default 1000 rows per batch)
+- Log progress every 5,000 rows
+- Complete in ~10-30 seconds for the full dataset (~70,000 airports)
+
+### Verify the Import
+
+Start the API server and test the airport endpoints:
+
+```bash
+# Start the server (in a separate terminal)
+./gradlew :backend:api:run
+
+# Test listing airports
+curl 'http://localhost:8080/api/airports?limit=5'
+
+# Test searching for an airport
+curl 'http://localhost:8080/api/search/airports?q=heathrow'
+
+# Test filtering by country
+curl 'http://localhost:8080/api/airports?country=US&limit=5'
+```
+
+For more details, see the [Airport Import Guide](./dev/airport-import.md).
+
+## Step 9: Configure Environment Variables (Optional)
+
+The application supports configuration via a `.env` file or system environment variables.
+
+### Using a .env file (Recommended)
+
+Create a `.env` file in the project root:
+
+```bash
+# Copy the example file
+cp .env.example .env
+
+# Edit with your configuration
+nano .env
+```
+
+Example `.env` file contents:
+```env
+# Database connection
+DB_URL=jdbc:postgresql://localhost:5432/gal
+DB_USER=gal
+DB_PASSWORD=gal
+
+# API server
+PORT=8080
+
+# Simulation
+TICK_INTERVAL_SECONDS=5
+```
+
+### Using system environment variables
+
+Alternatively, export environment variables in your shell:
 
 ```bash
 # Set custom port
 export PORT=8080
 
-# Set database connection (when database is required)
+# Set database connection
 export DB_URL="jdbc:postgresql://localhost:5432/gal"
 export DB_USER="gal"
 export DB_PASSWORD="gal"

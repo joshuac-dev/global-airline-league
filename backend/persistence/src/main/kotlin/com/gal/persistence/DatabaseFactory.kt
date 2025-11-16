@@ -2,6 +2,7 @@ package com.gal.persistence
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import io.github.cdimascio.dotenv.dotenv
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.TransactionManager
@@ -13,13 +14,24 @@ import javax.sql.DataSource
 object DatabaseFactory {
     private var dataSource: HikariDataSource? = null
     private var isInitialized = false
+    
+    // Load .env file if it exists (only once)
+    private val dotenv by lazy {
+        try {
+            dotenv {
+                ignoreIfMissing = true
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
 
     /**
      * Initialize the database connection pool and run migrations.
      *
-     * @param url JDBC connection string (default from DB_URL env var)
-     * @param user Database username (default from DB_USER env var)
-     * @param password Database password (default from DB_PASSWORD env var)
+     * @param url JDBC connection string (default from DB_URL env var or .env file)
+     * @param user Database username (default from DB_USER env var or .env file)
+     * @param password Database password (default from DB_PASSWORD env var or .env file)
      * @param runMigrations Whether to run Flyway migrations on init (default true)
      */
     fun init(
@@ -81,6 +93,13 @@ object DatabaseFactory {
     }
 
     private fun getEnv(key: String, default: String): String {
-        return System.getenv(key) ?: default
+        // First check System environment variables (takes precedence)
+        System.getenv(key)?.let { return it }
+        
+        // Then check .env file
+        dotenv?.get(key)?.let { return it }
+        
+        // Fall back to default
+        return default
     }
 }
