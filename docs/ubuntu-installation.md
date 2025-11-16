@@ -136,7 +136,58 @@ Expected response:
 
 To stop the server, press `Ctrl+C` in the terminal where it's running.
 
-## Step 8: Configure Environment Variables (Optional)
+## Step 8: Import Airport Data (Optional)
+
+To enable the airport-related API endpoints with real data, you can import airport information from the OurAirports dataset.
+
+### Download the Dataset
+
+```bash
+# Download the OurAirports CSV
+curl -o airports.csv https://ourairports.com/data/airports.csv
+```
+
+### Run the Importer
+
+```bash
+# Set environment variables
+export DB_URL="jdbc:postgresql://localhost:5432/gal"
+export DB_USER="gal"
+export DB_PASSWORD="gal"
+export IMPORT_AIRPORTS_CSV="$(pwd)/airports.csv"
+
+# Run the import
+./gradlew :backend:jobs:importAirports
+```
+
+The import process will:
+- Read the CSV file in streaming mode (memory efficient)
+- Skip rows with missing essential fields
+- Insert airports in batches (default 1000 rows per batch)
+- Log progress every 5,000 rows
+- Complete in ~10-30 seconds for the full dataset (~70,000 airports)
+
+### Verify the Import
+
+Start the API server and test the airport endpoints:
+
+```bash
+# Start the server (in a separate terminal)
+./gradlew :backend:api:run
+
+# Test listing airports
+curl 'http://localhost:8080/api/airports?limit=5'
+
+# Test searching for an airport
+curl 'http://localhost:8080/api/search/airports?q=heathrow'
+
+# Test filtering by country
+curl 'http://localhost:8080/api/airports?country=US&limit=5'
+```
+
+For more details, see the [Airport Import Guide](./dev/airport-import.md).
+
+## Step 9: Configure Environment Variables (Optional)
 
 For production or custom configurations, create a `.env` file or export variables:
 
