@@ -1,10 +1,15 @@
 package com.gal.api
 
+import com.gal.api.airline.AirlineRepositoryLocator
+import com.gal.api.airline.AirlineResponse
 import com.gal.api.airport.AirportResponse
 import com.gal.api.airport.ErrorResponse
 import com.gal.api.airport.RepositoryLocator
+import com.gal.core.AirlineId
 import com.gal.core.AirportId
+import com.gal.core.airline.Airline
 import com.gal.core.airport.*
+import com.gal.persistence.airline.AirlineRepository
 import com.gal.persistence.airport.AirportRepository
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -30,7 +35,6 @@ class ApplicationTest {
     fun testNotImplementedEndpoints() = testApplication {
         // Test that placeholder routes return 501 Not Implemented
         val endpoints = listOf(
-            "/api/airlines",
             "/api/routes"
         )
 
@@ -128,6 +132,61 @@ class ApplicationTest {
         
         RepositoryLocator.clear()
     }
+    
+    @Test
+    fun testAirlinesWithoutDatabase() = testApplication {
+        // Test that airline endpoints return 503 when database is not available
+        AirlineRepositoryLocator.clear()
+        
+        val response = client.get("/api/airlines")
+        assertEquals(HttpStatusCode.ServiceUnavailable, response.status)
+        
+        val body = response.bodyAsText()
+        val errorResponse = Json.decodeFromString<ErrorResponse>(body)
+        assertEquals("database unavailable", errorResponse.error)
+    }
+    
+    @Test
+    fun testAirlinesListEmpty() = testApplication {
+        // Setup stub repository
+        AirlineRepositoryLocator.setAirlineRepository(StubAirlineRepository())
+        
+        val response = client.get("/api/airlines")
+        assertEquals(HttpStatusCode.OK, response.status)
+        
+        val body = response.bodyAsText()
+        val airlines = Json.decodeFromString<List<AirlineResponse>>(body)
+        assertEquals(0, airlines.size)
+        
+        AirlineRepositoryLocator.clear()
+    }
+    
+    @Test
+    fun testAirlineByIdNotFound() = testApplication {
+        // Setup stub repository
+        AirlineRepositoryLocator.setAirlineRepository(StubAirlineRepository())
+        
+        val response = client.get("/api/airlines/999")
+        assertEquals(HttpStatusCode.NotFound, response.status)
+        
+        val body = response.bodyAsText()
+        val errorResponse = Json.decodeFromString<ErrorResponse>(body)
+        assertEquals("airline not found", errorResponse.error)
+        
+        AirlineRepositoryLocator.clear()
+    }
+    
+    @Test
+    fun testAirlineParameterParsing() = testApplication {
+        // Setup stub repository
+        AirlineRepositoryLocator.setAirlineRepository(StubAirlineRepository())
+        
+        // Test with offset and limit
+        val response1 = client.get("/api/airlines?offset=10&limit=20")
+        assertEquals(HttpStatusCode.OK, response1.status)
+        
+        AirlineRepositoryLocator.clear()
+    }
 }
 
 /**
@@ -139,4 +198,16 @@ class StubAirportRepository : AirportRepository {
     override suspend fun list(offset: Int, limit: Int, country: CountryCode?): List<Airport> = emptyList()
     
     override suspend fun search(query: String, limit: Int): List<Airport> = emptyList()
+}
+
+/**
+ * Stub airline repository for testing that returns empty results.
+ */
+class StubAirlineRepository : AirlineRepository {
+    override suspend fun create(name: String): Result<Airline> = 
+        Result.failure(UnsupportedOperationException("Not implemented in stub"))
+    
+    override suspend fun get(id: AirlineId): Airline? = null
+    
+    override suspend fun list(offset: Int, limit: Int): List<Airline> = emptyList()
 }
