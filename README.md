@@ -139,7 +139,7 @@ The application requires PostgreSQL 14+ for full functionality. Database migrati
    # Edit .env and set IMPORT_AIRPORTS_CSV=/path/to/airports.csv
    
    # Download the dataset
-   curl -o airports.csv https://ourairports.com/data/airports.csv
+   curl -o airports.csv https://davidmegginson.github.io/ourairports-data/airports.csv
    
    # Run the importer (reads from .env file)
    ./gradlew :backend:jobs:importAirports
@@ -148,7 +148,7 @@ The application requires PostgreSQL 14+ for full functionality. Database migrati
    Or use environment variables:
    ```bash
    # Option 2: Use environment variables
-   curl -o airports.csv https://ourairports.com/data/airports.csv
+   curl -o airports.csv https://davidmegginson.github.io/ourairports-data/airports.csv
    export IMPORT_AIRPORTS_CSV="$(pwd)/airports.csv"
    ./gradlew :backend:jobs:importAirports
    ```

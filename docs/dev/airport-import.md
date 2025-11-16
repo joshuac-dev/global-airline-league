@@ -20,11 +20,11 @@ The airport importer reads an OurAirports-style CSV file and populates the `airp
 
 Download the latest airports CSV from OurAirports:
 
-**URL:** https://ourairports.com/data/airports.csv
+**URL:** https://davidmegginson.github.io/ourairports-data/airports.csv
 
 Or use curl:
 ```bash
-curl -o airports.csv https://ourairports.com/data/airports.csv
+curl -o airports.csv https://davidmegginson.github.io/ourairports-data/airports.csv
 ```
 
 The CSV file contains comprehensive global airport data with the following relevant columns:
@@ -123,7 +123,7 @@ The importer can be run using either a .env file or system environment variables
 
 ```bash
 # Step 1: Download the CSV
-curl -o airports.csv https://ourairports.com/data/airports.csv
+curl -o airports.csv https://davidmegginson.github.io/ourairports-data/airports.csv
 
 # Step 2: Copy and configure .env
 cp .env.example .env
@@ -139,7 +139,7 @@ The Gradle task will automatically read configuration from the .env file.
 
 ```bash
 # Step 1: Download the CSV
-curl -o airports.csv https://ourairports.com/data/airports.csv
+curl -o airports.csv https://davidmegginson.github.io/ourairports-data/airports.csv
 
 # Step 2: Set environment variables
 export DB_URL="jdbc:postgresql://localhost:5432/gal"

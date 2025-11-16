@@ -144,7 +144,7 @@ To enable the airport-related API endpoints with real data, you can import airpo
 
 ```bash
 # Download the OurAirports CSV
-curl -o airports.csv https://ourairports.com/data/airports.csv
+curl -o airports.csv https://davidmegginson.github.io/ourairports-data/airports.csv
 ```
 
 ### Run the Importer
