@@ -1,0 +1,10 @@
+# Placeholder for Flyway migrations
+
+This directory will contain SQL migration scripts in the format:
+- V1__initial_schema.sql
+- V2__add_airports_table.sql
+- etc.
+
+Flyway will automatically discover and apply migrations in version order.
+
+For now, this directory is empty as the initial PR focuses on scaffolding.
