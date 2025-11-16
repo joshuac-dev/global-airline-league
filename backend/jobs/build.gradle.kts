@@ -21,6 +21,29 @@ tasks.register<JavaExec>("importAirports") {
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("com.gal.jobs.importer.AirportsImporter")
     
-    // Pass environment variables to the process
-    environment(System.getenv())
+    // Load .env file if it exists and merge with system environment variables
+    val envFile = rootProject.file(".env")
+    val envMap = mutableMapOf<String, String>()
+    
+    // First, load from .env file if it exists
+    if (envFile.exists()) {
+        envFile.readLines().forEach { line ->
+            val trimmedLine = line.trim()
+            // Skip empty lines and comments
+            if (trimmedLine.isNotEmpty() && !trimmedLine.startsWith("#")) {
+                val parts = trimmedLine.split("=", limit = 2)
+                if (parts.size == 2) {
+                    val key = parts[0].trim()
+                    val value = parts[1].trim()
+                    envMap[key] = value
+                }
+            }
+        }
+    }
+    
+    // Then, override with system environment variables (they take precedence)
+    envMap.putAll(System.getenv())
+    
+    // Pass all environment variables to the process
+    environment(envMap)
 }

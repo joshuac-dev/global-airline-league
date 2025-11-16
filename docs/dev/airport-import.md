@@ -117,23 +117,41 @@ export IMPORT_AIRPORTS_LOG_INTERVAL=5000
 
 ## Running the Import
 
-### Step 1: Download the CSV
+The importer can be run using either a .env file or system environment variables. The Gradle task automatically loads configuration from the .env file if it exists.
+
+### Method 1: Using .env file (Recommended)
+
 ```bash
+# Step 1: Download the CSV
 curl -o airports.csv https://ourairports.com/data/airports.csv
+
+# Step 2: Copy and configure .env
+cp .env.example .env
+# Edit .env and set IMPORT_AIRPORTS_CSV to the absolute path of airports.csv
+
+# Step 3: Run the import
+./gradlew :backend:jobs:importAirports
 ```
 
-### Step 2: Set environment variables
+The Gradle task will automatically read configuration from the .env file.
+
+### Method 2: Using system environment variables
+
 ```bash
+# Step 1: Download the CSV
+curl -o airports.csv https://ourairports.com/data/airports.csv
+
+# Step 2: Set environment variables
 export DB_URL="jdbc:postgresql://localhost:5432/gal"
 export DB_USER="gal"
 export DB_PASSWORD="gal"
 export IMPORT_AIRPORTS_CSV="$(pwd)/airports.csv"
-```
 
-### Step 3: Run the importer
-```bash
+# Step 3: Run the importer
 ./gradlew :backend:jobs:importAirports
 ```
+
+**Note:** System environment variables take precedence over .env file values, allowing you to override specific settings without modifying the .env file.
 
 The importer will:
 1. Connect to the database
