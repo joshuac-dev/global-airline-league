@@ -21,3 +21,7 @@ dependencies {
     testImplementation(libs.bundles.testing)
     testImplementation(libs.ktor.server.test.host)
 }
+
+tasks.test {
+    environment("SKIP_DB_INIT", "true")
+}

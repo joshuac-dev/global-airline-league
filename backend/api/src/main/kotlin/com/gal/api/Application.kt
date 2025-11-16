@@ -1,6 +1,8 @@
 package com.gal.api
 
+import com.gal.api.airport.RepositoryLocator
 import com.gal.api.airport.airportRoutes
+import com.gal.persistence.DatabaseFactory
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.callloging.*
@@ -17,6 +19,21 @@ import org.slf4j.event.Level
 import java.time.Duration
 
 fun Application.module() {
+    // Initialize database and repositories once at startup
+    // Skip initialization if already done (e.g., by tests that set up stub repositories)
+    val shouldInitialize = System.getenv("SKIP_DB_INIT") != "true" && 
+                           RepositoryLocator.getAirportRepository() == null
+    
+    if (shouldInitialize) {
+        try {
+            DatabaseFactory.init()
+            RepositoryLocator.initialize()
+        } catch (e: Exception) {
+            log.warn("Failed to initialize database: ${e.message}")
+            // Continue without database - API will return 503 for database-dependent endpoints
+        }
+    }
+
     // Install plugins
     install(CallLogging) {
         level = Level.INFO
