@@ -1,5 +1,7 @@
 package com.gal.api
 
+import com.gal.api.airline.AirlineRepositoryLocator
+import com.gal.api.airline.airlineRoutes
 import com.gal.api.airport.RepositoryLocator
 import com.gal.api.airport.airportRoutes
 import com.gal.persistence.DatabaseFactory
@@ -28,6 +30,7 @@ fun Application.module() {
         try {
             DatabaseFactory.init()
             RepositoryLocator.initialize()
+            AirlineRepositoryLocator.initialize()
         } catch (e: Exception) {
             log.warn("Failed to initialize database: ${e.message}")
             // Continue without database - API will return 503 for database-dependent endpoints
@@ -83,12 +86,8 @@ fun Application.module() {
             // Airport routes (implemented)
             airportRoutes()
             
-            // Placeholder route groups (not yet implemented)
-            route("/airlines") {
-                get {
-                    call.respond(HttpStatusCode.NotImplemented, "Airlines API not yet implemented")
-                }
-            }
+            // Airline routes (implemented)
+            airlineRoutes()
 
             route("/routes") {
                 get {
