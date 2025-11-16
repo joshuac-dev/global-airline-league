@@ -62,15 +62,18 @@ sudo systemctl status postgresql
 sudo -u postgres psql
 
 # Create database and user (run these commands in psql prompt)
-CREATE DATABASE gal;
-CREATE USER gal WITH PASSWORD 'gal';
+CREATE USER gal WITH ENCRYPTED PASSWORD 'gal';
+CREATE DATABASE gal OWNER gal;
 GRANT ALL PRIVILEGES ON DATABASE gal TO gal;
+GRANT ALL ON SCHEMA public TO gal;
 \q
 
 # Test connection
 psql -U gal -d gal -h localhost -W
 # Enter password: gal
 ```
+
+**Note:** Setting the database owner to `gal` and granting schema permissions ensures the user can create tables and run migrations without permission issues.
 
 To allow local connections, edit PostgreSQL configuration:
 
