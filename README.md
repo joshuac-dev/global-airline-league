@@ -27,7 +27,7 @@ global-airline-league/
 
 ## Prerequisites
 
-- **JDK 21+** (for running the application)
+- **JDK 17+** (for running the application)
 - **Gradle** (wrapper included)
 - **PostgreSQL 14+** (optional for now; not required for basic health check)
 

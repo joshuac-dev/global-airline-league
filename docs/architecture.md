@@ -73,7 +73,7 @@ The backend is split into four Gradle modules:
 ## Technology Stack
 
 ### Backend
-- **Language:** Kotlin 2.x with JVM Toolchain 21
+- **Language:** Kotlin 2.x with JVM target 17
 - **Build:** Gradle with Kotlin DSL
 - **Web Framework:** Ktor (CIO or Netty engine)
 - **Database:** PostgreSQL with Jetbrains Exposed ORM
