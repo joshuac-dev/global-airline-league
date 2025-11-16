@@ -28,7 +28,12 @@ Track the game clock and orchestrate simulation updates.
 - ❌ AI airline behavior and decision-making
 
 ### Airports
-- ❌ Airport entity (IATA code, name, location, size)
+- 🚧 **Airport entity + persistence + list/search API** ([PR #XX](link-to-pr))
+  - ✅ Airport entity (IATA code, name, location, size)
+  - ✅ Persistence layer with Exposed + PostgreSQL
+  - ✅ List API with pagination and country filter
+  - ✅ Search API (ILIKE-based, FTS support in migration for future)
+  - ✅ API tests with stub repository
 - ❌ Airport slots and capacity management
 - ❌ Runway data and aircraft compatibility
 - ❌ Airport fees and pricing
@@ -107,19 +112,19 @@ Track the game clock and orchestrate simulation updates.
 - ❌ Define Exposed table schemas for all entities
 - ❌ Repository pattern for data access
 - ❌ Transaction management
-- ❌ Indexes for performance (airport lookups, link queries, etc.)
+- ✅ Indexes for performance (airport IATA/ICAO/country lookups, GIN index for FTS)
 
 ### Migrations
-- ❌ Convert legacy SQL scripts to Flyway migrations
-- ❌ Initial schema creation
-- ❌ Incremental migrations for schema evolution
-- ❌ Data seeding scripts (airports, default config)
+- 🚧 Convert legacy SQL scripts to Flyway migrations
+- ✅ Initial schema creation (V1__create_airports.sql)
+- ✅ Incremental migrations infrastructure (Flyway configured)
+- 🚧 Data seeding scripts (docs/dev/seed_airports.sql for testing)
 
 ### Search
-- ❌ Full-Text Search (FTS) setup in PostgreSQL
-- ❌ Airport search by name, city, IATA code
+- ✅ Full-Text Search (FTS) setup in PostgreSQL (migration ready, ILIKE fallback implemented)
+- ✅ Airport search by name, city, IATA code
 - ❌ Airline search by name or code
-- ❌ Search API endpoints
+- ✅ Search API endpoints (/api/search/airports)
 
 ## Analytics & History
 
@@ -182,10 +187,10 @@ Track the game clock and orchestrate simulation updates.
 
 ### REST API
 - ❌ `/api/airlines` - CRUD operations
-- ❌ `/api/airports` - List, search, details
+- ✅ `/api/airports` - List, search, details (GET list, GET by id implemented)
 - ❌ `/api/routes` - Link management
 - ❌ `/api/aircraft` - Fleet management
-- ❌ `/api/search` - Full-text search
+- ✅ `/api/search/airports` - Full-text search for airports
 - ❌ `/api/alliances` - Alliance operations
 - ❌ `/api/rankings` - Leaderboards
 - ❌ `/health` - Health check ✅ (implemented in initial PR)
