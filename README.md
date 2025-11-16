@@ -101,10 +101,21 @@ The application requires PostgreSQL 14+ for full functionality. Database migrati
    \q
    ```
 
-3. **Seed sample airport data** (optional, for testing)
+3. **Import airport data**
+   
+   Download the OurAirports CSV and import it:
    ```bash
-   psql -U gal -d gal -f docs/dev/seed_airports.sql
+   # Download the dataset
+   curl -o airports.csv https://ourairports.com/data/airports.csv
+   
+   # Set environment variables
+   export IMPORT_AIRPORTS_CSV="$(pwd)/airports.csv"
+   
+   # Run the importer
+   ./gradlew :backend:jobs:importAirports
    ```
+   
+   For detailed instructions, see the [Airport Import Guide](./docs/dev/airport-import.md).
 
 #### Environment Variables for Database
 

@@ -9,6 +9,17 @@ dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.logback.classic)
+    implementation(libs.commons.csv)
 
     testImplementation(libs.bundles.testing)
+}
+
+tasks.register<JavaExec>("importAirports") {
+    group = "data-import"
+    description = "Import airport data from OurAirports CSV file"
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.gal.jobs.importer.AirportsImporter")
+    
+    // Pass environment variables to the process
+    environment(System.getenv())
 }

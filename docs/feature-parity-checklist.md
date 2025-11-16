@@ -102,7 +102,14 @@ Track the game clock and orchestrate simulation updates.
 ## Data Management
 
 ### Initial Data Import
-- ❌ Airport data import (coordinates, country, population)
+- 🚧 **Airport data import/seed** ([This PR](link-to-pr))
+  - ✅ CSV importer with OurAirports format support
+  - ✅ Batch insert with configurable batch size
+  - ✅ Field mapping and validation (IATA/ICAO, coordinates, elevation conversion)
+  - ✅ Skip-if-non-empty and optional truncate modes
+  - ✅ Progress logging and error handling
+  - ✅ Gradle task (:backend:jobs:importAirports)
+  - ✅ Documentation and sample data
 - ❌ Runway data import
 - ❌ City/region data import
 - ❌ Weather/climate data import (if retained)

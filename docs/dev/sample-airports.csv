@@ -1,0 +1,6 @@
+name,iata_code,icao_code,gps_code,municipality,iso_country,latitude_deg,longitude_deg,elevation_ft,timezone
+"London Heathrow Airport",LHR,EGLL,EGLL,London,GB,51.4706,-0.461941,83,Europe/London
+"John F Kennedy International Airport",JFK,KJFK,KJFK,New York,US,40.639751,-73.778925,13,America/New_York
+"Tokyo Haneda Airport",HND,RJTT,RJTT,Tokyo,JP,35.552258,139.779694,35,Asia/Tokyo
+"Sydney Kingsford Smith International Airport",SYD,YSSY,YSSY,Sydney,AU,-33.946111,151.177222,21,Australia/Sydney
+"Charles de Gaulle Airport",CDG,LFPG,LFPG,Paris,FR,49.012779,2.55,392,Europe/Paris
