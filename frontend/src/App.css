@@ -1,0 +1,29 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav {
+  background-color: #242424;
+  padding: 1rem 2rem;
+  display: flex;
+  gap: 2rem;
+  border-bottom: 1px solid #646cff;
+}
+
+.nav a {
+  color: rgba(255, 255, 255, 0.87);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.nav a:hover {
+  color: #646cff;
+}
+
+.main {
+  flex: 1;
+}
+
