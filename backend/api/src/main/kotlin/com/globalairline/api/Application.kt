@@ -28,6 +28,10 @@ fun Application.module() {
     val dbUsername = environment.config.property("database.username").getString()
     val dbPassword = environment.config.property("database.password").getString()
     
+    // Run migrations
+    DatabaseFactory.runMigrations(dbUrl, dbUsername, dbPassword)
+    
+    // Initialize database connection pool
     DatabaseFactory.init(dbUrl, dbUsername, dbPassword)
     
     // Install plugins

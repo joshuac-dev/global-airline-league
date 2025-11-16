@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { apiClient, HealthResponse } from '../api/client';
+import { apiClient, type HealthResponse } from '../api/client';
 import { useWorldWebSocket } from '../hooks/useWebSocket';
 
 export default function Home() {
