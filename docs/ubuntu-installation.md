@@ -164,6 +164,24 @@ Alternatively, create a systemd service file for production deployment.
 chmod +x gradlew
 ```
 
+### Issue: "Unable to access jarfile gradle/wrapper/gradle-wrapper.jar"
+
+**Solution:**
+```bash
+# The Gradle wrapper JAR is missing. Regenerate it:
+gradle wrapper --gradle-version 8.10.2
+
+# Or if you don't have gradle installed globally, download from GitHub:
+curl -L -o gradle/wrapper/gradle-wrapper.jar \
+  https://github.com/gradle/gradle/raw/v8.10.2/gradle/wrapper/gradle-wrapper.jar
+
+# Make sure gradlew is executable
+chmod +x gradlew
+
+# Try building again
+./gradlew build
+```
+
 ### Issue: Java version mismatch
 
 **Solution:**
