@@ -17,6 +17,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.bundles.ktor.server)
     implementation(libs.logback.classic)
+    implementation(libs.dotenv.kotlin)
 
     testImplementation(libs.bundles.testing)
     testImplementation(libs.ktor.server.test.host)

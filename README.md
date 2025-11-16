@@ -67,13 +67,42 @@ Expected response:
 
 ## Configuration
 
-The application is configured via environment variables:
+The application is configured via environment variables. You can set them in two ways:
+
+### Option 1: Using a .env file (Recommended)
+
+Create a `.env` file in the project root directory (copy from `.env.example`):
+
+```bash
+cp .env.example .env
+```
+
+Edit the `.env` file with your configuration:
+
+```env
+# Database connection
+DB_URL=jdbc:postgresql://localhost:5432/gal
+DB_USER=gal
+DB_PASSWORD=gal
+
+# API server
+PORT=8080
+
+# Simulation
+TICK_INTERVAL_SECONDS=5
+```
+
+### Option 2: Using system environment variables
+
+Alternatively, export environment variables in your shell:
 
 - `PORT` - HTTP server port (default: 8080)
 - `DB_URL` - PostgreSQL JDBC URL (default: `jdbc:postgresql://localhost:5432/gal`)
 - `DB_USER` - Database username (default: `gal`)
 - `DB_PASSWORD` - Database password (default: `gal`)
 - `TICK_INTERVAL_SECONDS` - Simulation tick frequency (default: 5)
+
+**Note:** System environment variables take precedence over .env file values.
 
 ### Database Setup
 
@@ -103,15 +132,24 @@ The application requires PostgreSQL 14+ for full functionality. Database migrati
 
 3. **Import airport data**
    
-   Download the OurAirports CSV and import it:
+   Create a `.env` file with your configuration or set environment variables:
    ```bash
+   # Option 1: Create .env file (recommended)
+   cp .env.example .env
+   # Edit .env and set IMPORT_AIRPORTS_CSV=/path/to/airports.csv
+   
    # Download the dataset
    curl -o airports.csv https://ourairports.com/data/airports.csv
    
-   # Set environment variables
-   export IMPORT_AIRPORTS_CSV="$(pwd)/airports.csv"
+   # Run the importer (reads from .env file)
+   ./gradlew :backend:jobs:importAirports
+   ```
    
-   # Run the importer
+   Or use environment variables:
+   ```bash
+   # Option 2: Use environment variables
+   curl -o airports.csv https://ourairports.com/data/airports.csv
+   export IMPORT_AIRPORTS_CSV="$(pwd)/airports.csv"
    ./gradlew :backend:jobs:importAirports
    ```
    
@@ -119,13 +157,22 @@ The application requires PostgreSQL 14+ for full functionality. Database migrati
 
 #### Environment Variables for Database
 
-Set these before running the application:
+You can configure database connection using a `.env` file or system environment variables:
 
+**Using .env file (recommended):**
+```bash
+cp .env.example .env
+# Edit .env with your database credentials
+```
+
+**Using system environment variables:**
 ```bash
 export DB_URL="jdbc:postgresql://localhost:5432/gal"
 export DB_USER="gal"
 export DB_PASSWORD="gal"
 ```
+
+The application will automatically load configuration from the `.env` file if it exists. System environment variables take precedence over `.env` file values.
 
 Then initialize the database in your application startup (migrations run automatically).
 

@@ -58,9 +58,38 @@ The CSV file contains comprehensive global airport data with the following relev
 
 ## Environment Variables
 
+You can configure the importer using environment variables in two ways:
+
+### Option 1: Using a .env file (Recommended)
+
+Create a `.env` file in the project root directory:
+
+```bash
+# Database connection
+DB_URL=jdbc:postgresql://localhost:5432/gal
+DB_USER=gal
+DB_PASSWORD=gal
+
+# CSV file path (absolute path required)
+IMPORT_AIRPORTS_CSV=/path/to/airports.csv
+
+# Optional settings
+IMPORT_AIRPORTS_TRUNCATE=false
+IMPORT_AIRPORTS_BATCH_SIZE=1000
+IMPORT_AIRPORTS_LOG_INTERVAL=5000
+```
+
+You can copy the `.env.example` file as a starting point:
+```bash
+cp .env.example .env
+# Edit .env with your values
+```
+
+### Option 2: Using system environment variables
+
 Set these environment variables before running the import:
 
-### Required
+#### Required
 ```bash
 # Database connection
 export DB_URL="jdbc:postgresql://localhost:5432/gal"
@@ -71,7 +100,7 @@ export DB_PASSWORD="gal"
 export IMPORT_AIRPORTS_CSV="/path/to/airports.csv"
 ```
 
-### Optional
+#### Optional
 ```bash
 # Truncate table before import (default: false)
 # Only set to true if you want to replace all existing data
@@ -83,6 +112,8 @@ export IMPORT_AIRPORTS_BATCH_SIZE=1000
 # Log progress every N rows (default: 5000)
 export IMPORT_AIRPORTS_LOG_INTERVAL=5000
 ```
+
+**Note:** System environment variables take precedence over .env file values.
 
 ## Running the Import
 

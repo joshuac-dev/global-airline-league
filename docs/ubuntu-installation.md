@@ -149,6 +149,24 @@ curl -o airports.csv https://ourairports.com/data/airports.csv
 
 ### Run the Importer
 
+You can configure the importer using a `.env` file or environment variables:
+
+**Option 1: Using .env file (recommended)**
+
+```bash
+# Copy the example .env file
+cp .env.example .env
+
+# Edit .env and set the CSV path
+nano .env
+# Add this line: IMPORT_AIRPORTS_CSV=/home/youruser/projects/global-airline-league/airports.csv
+
+# Run the import (reads from .env file)
+./gradlew :backend:jobs:importAirports
+```
+
+**Option 2: Using environment variables**
+
 ```bash
 # Set environment variables
 export DB_URL="jdbc:postgresql://localhost:5432/gal"
@@ -189,13 +207,43 @@ For more details, see the [Airport Import Guide](./dev/airport-import.md).
 
 ## Step 9: Configure Environment Variables (Optional)
 
-For production or custom configurations, create a `.env` file or export variables:
+The application supports configuration via a `.env` file or system environment variables.
+
+### Using a .env file (Recommended)
+
+Create a `.env` file in the project root:
+
+```bash
+# Copy the example file
+cp .env.example .env
+
+# Edit with your configuration
+nano .env
+```
+
+Example `.env` file contents:
+```env
+# Database connection
+DB_URL=jdbc:postgresql://localhost:5432/gal
+DB_USER=gal
+DB_PASSWORD=gal
+
+# API server
+PORT=8080
+
+# Simulation
+TICK_INTERVAL_SECONDS=5
+```
+
+### Using system environment variables
+
+Alternatively, export environment variables in your shell:
 
 ```bash
 # Set custom port
 export PORT=8080
 
-# Set database connection (when database is required)
+# Set database connection
 export DB_URL="jdbc:postgresql://localhost:5432/gal"
 export DB_USER="gal"
 export DB_PASSWORD="gal"

@@ -10,6 +10,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.logback.classic)
     implementation(libs.commons.csv)
+    implementation(libs.dotenv.kotlin)
 
     testImplementation(libs.bundles.testing)
 }

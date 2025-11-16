@@ -3,6 +3,7 @@ package com.gal.jobs.importer
 import com.gal.persistence.DatabaseFactory
 import com.gal.persistence.airport.AirportRow
 import com.gal.persistence.airport.AirportsBulkRepository
+import io.github.cdimascio.dotenv.dotenv
 import kotlinx.coroutines.runBlocking
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVParser
@@ -13,7 +14,7 @@ import java.io.FileReader
 /**
  * CLI tool to import airport data from an OurAirports-style CSV file.
  * 
- * Environment variables:
+ * Environment variables (can be set in .env file or system environment):
  * - IMPORT_AIRPORTS_CSV: Path to the CSV file (required)
  * - IMPORT_AIRPORTS_TRUNCATE: Set to "true" to truncate the table before import (default: false)
  * - IMPORT_AIRPORTS_BATCH_SIZE: Number of rows to insert in each batch (default: 1000)
@@ -22,17 +23,36 @@ import java.io.FileReader
  */
 object AirportsImporter {
     private val logger = LoggerFactory.getLogger(AirportsImporter::class.java)
+    
+    // Load .env file if it exists
+    private val dotenv by lazy {
+        try {
+            dotenv {
+                ignoreIfMissing = true
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+    
+    private fun getEnv(key: String): String? {
+        return System.getenv(key) ?: dotenv?.get(key)
+    }
+    
+    private fun getEnvOrDefault(key: String, default: String): String {
+        return getEnv(key) ?: default
+    }
 
     @JvmStatic
     fun main(args: Array<String>) = runBlocking {
         logger.info("Starting airport data import")
 
-        // Read configuration from environment
-        val csvPath = System.getenv("IMPORT_AIRPORTS_CSV")
+        // Read configuration from environment or .env file
+        val csvPath = getEnv("IMPORT_AIRPORTS_CSV")
             ?: error("IMPORT_AIRPORTS_CSV environment variable is required")
-        val truncate = System.getenv("IMPORT_AIRPORTS_TRUNCATE")?.toBoolean() ?: false
-        val batchSize = System.getenv("IMPORT_AIRPORTS_BATCH_SIZE")?.toIntOrNull() ?: 1000
-        val logInterval = System.getenv("IMPORT_AIRPORTS_LOG_INTERVAL")?.toIntOrNull() ?: 5000
+        val truncate = getEnv("IMPORT_AIRPORTS_TRUNCATE")?.toBoolean() ?: false
+        val batchSize = getEnv("IMPORT_AIRPORTS_BATCH_SIZE")?.toIntOrNull() ?: 1000
+        val logInterval = getEnv("IMPORT_AIRPORTS_LOG_INTERVAL")?.toIntOrNull() ?: 5000
 
         logger.info("Configuration:")
         logger.info("  CSV path: $csvPath")
