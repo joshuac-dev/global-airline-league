@@ -48,6 +48,30 @@ The backend is split into four Gradle modules:
 - Configurable intervals via environment variables
 - Will be integrated into the Ktor lifecycle in a future PR
 
+## Module Boundaries: Airport Slice Example
+
+The airport implementation demonstrates the clean separation of concerns across modules:
+
+### `backend/core/src/main/kotlin/com/gal/core/airport/`
+- **Airport.kt**: Domain entity with validation (lat/lon bounds, required fields)
+- **Value objects**: `CountryCode`, `IATA`, `ICAO` (inline classes for type safety)
+- **No dependencies** on frameworks, database, or HTTP
+- Pure Kotlin data classes and business rules
+
+### `backend/persistence/src/main/kotlin/com/gal/persistence/airport/`
+- **Airports.kt**: Exposed table definition mapping to database schema
+- **AirportRepository.kt**: Interface defining data access operations
+- **AirportRepositoryExposed.kt**: Implementation using Exposed ORM + raw SQL for search
+- **Migration**: `V1__create_airports.sql` (Flyway-managed schema)
+
+### `backend/api/src/main/kotlin/com/gal/api/airport/`
+- **AirportDto.kt**: Serializable response models (`AirportResponse`)
+- **AirportRoutes.kt**: Ktor routes for list, get, and search endpoints
+- **RepositoryLocator.kt**: Simple dependency wiring (can be replaced with DI framework later)
+- Handles HTTP concerns: status codes, query parameters, error responses
+
+This pattern will be replicated for airlines, routes, aircraft, and other domain slices.
+
 ## Dependency Rules
 
 ```
@@ -135,12 +159,37 @@ Database connection configured via environment variables:
 Additional tuning via `application.conf` or env vars as needed.
 
 ### Full-Text Search
-PostgreSQL's built-in Full-Text Search (FTS) will be used for:
-- Airport search (by name, city, IATA code)
-- Airline search (by name, code)
-- Potentially route/destination search
 
-This avoids external search engines (Elasticsearch, etc.) and keeps the stack simple.
+#### Airport Search Implementation
+
+The airport search functionality uses a pragmatic approach:
+
+**Database Schema (V1__create_airports.sql):**
+- Generated `tsvector` column combining IATA, ICAO, name, city, and country code
+- Weighted search vectors: IATA/ICAO (weight A), name (weight A), city (weight B), country (weight C)
+- GIN index on `search_vector` for efficient full-text queries
+- Uses English text search configuration for name/city, simple for codes
+
+**Repository Implementation:**
+- Primary implementation uses ILIKE pattern matching for simplicity and portability
+- Full-text search infrastructure prepared in database schema for future optimization
+- Search query: `SELECT * FROM airports WHERE name ILIKE '%query%' OR iata ILIKE '%query%' OR icao ILIKE '%query%' OR city ILIKE '%query%'`
+- Results ordered by name (alphabetically)
+
+**Future Enhancements:**
+- Implement native PostgreSQL FTS ranking: `ts_rank(search_vector, plainto_tsquery('english', query))`
+- Add fuzzy matching for typo tolerance
+- Consider trigram similarity for better partial matches
+
+**Benefits of this approach:**
+- PostgreSQL's built-in FTS avoids external dependencies (Elasticsearch, etc.)
+- ILIKE works across all database backends (H2, PostgreSQL) for testing
+- Simple to understand and maintain
+- Scales well for expected airport dataset size (~10K-40K records)
+
+#### Future Search Features
+- Airline search (by name, code) - not yet implemented
+- Route/destination search - not yet implemented
 
 ## Mapping and Geospatial
 

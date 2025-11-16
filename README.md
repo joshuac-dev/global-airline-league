@@ -75,7 +75,59 @@ The application is configured via environment variables:
 - `DB_PASSWORD` - Database password (default: `gal`)
 - `TICK_INTERVAL_SECONDS` - Simulation tick frequency (default: 5)
 
-**Note:** Database is not yet required for the `/health` endpoint. Full database integration will come in subsequent PRs.
+### Database Setup
+
+The application requires PostgreSQL 14+ for full functionality. Database migrations are managed by Flyway and run automatically on startup.
+
+#### Setting up PostgreSQL locally
+
+1. **Install PostgreSQL 14+**
+   ```bash
+   # Ubuntu/Debian
+   sudo apt install postgresql postgresql-contrib
+   
+   # macOS
+   brew install postgresql@14
+   ```
+
+2. **Create database and user**
+   ```bash
+   sudo -u postgres psql
+   ```
+   ```sql
+   CREATE DATABASE gal;
+   CREATE USER gal WITH ENCRYPTED PASSWORD 'gal';
+   GRANT ALL PRIVILEGES ON DATABASE gal TO gal;
+   \q
+   ```
+
+3. **Seed sample airport data** (optional, for testing)
+   ```bash
+   psql -U gal -d gal -f docs/dev/seed_airports.sql
+   ```
+
+#### Environment Variables for Database
+
+Set these before running the application:
+
+```bash
+export DB_URL="jdbc:postgresql://localhost:5432/gal"
+export DB_USER="gal"
+export DB_PASSWORD="gal"
+```
+
+Then initialize the database in your application startup (migrations run automatically).
+
+### API Endpoints
+
+Once the database is configured, the following endpoints are available:
+
+- `GET /health` - Health check (always available)
+- `GET /api/airports` - List airports with pagination (`?offset=0&limit=50&country=US`)
+- `GET /api/airports/{id}` - Get a specific airport by ID
+- `GET /api/search/airports` - Search airports (`?q=heathrow&limit=10`)
+
+**Note:** If the database is not configured, airport endpoints return `503 Service Unavailable`.
 
 ## Development Workflow
 

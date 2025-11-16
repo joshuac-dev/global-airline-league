@@ -1,5 +1,6 @@
 package com.gal.api
 
+import com.gal.api.airport.airportRoutes
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.callloging.*
@@ -60,29 +61,21 @@ fun Application.module() {
             call.respond(HealthResponse(status = "ok"))
         }
 
-        // Placeholder route groups
+        // API routes
         route("/api") {
+            // Airport routes (implemented)
+            airportRoutes()
+            
+            // Placeholder route groups (not yet implemented)
             route("/airlines") {
                 get {
                     call.respond(HttpStatusCode.NotImplemented, "Airlines API not yet implemented")
                 }
             }
 
-            route("/airports") {
-                get {
-                    call.respond(HttpStatusCode.NotImplemented, "Airports API not yet implemented")
-                }
-            }
-
             route("/routes") {
                 get {
                     call.respond(HttpStatusCode.NotImplemented, "Routes API not yet implemented")
-                }
-            }
-
-            route("/search") {
-                get {
-                    call.respond(HttpStatusCode.NotImplemented, "Search API not yet implemented")
                 }
             }
         }
