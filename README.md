@@ -9,6 +9,7 @@ Global Airline League is a modular monolithic application where players manage v
 ## Documentation
 
 - [Architecture](./docs/architecture.md) - System design, module boundaries, and tech stack
+- [Ubuntu Installation Guide](./docs/ubuntu-installation.md) - From-scratch setup on Ubuntu Server
 - [Feature Parity Checklist](./docs/feature-parity-checklist.md) - Progress tracking against original game features
 - [Repository Catalogue](./repo-catalogue/INDEX.md) - Analysis of the original game codebase
 
