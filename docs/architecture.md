@@ -113,6 +113,179 @@ This pattern will be replicated for airlines, routes, aircraft, and other domain
 - **Build:** Vite or similar modern tooling
 - **State:** To be determined (likely Redux Toolkit or Zustand)
 
+## Frontend SPA / Mapping Layer
+
+The frontend is a single-page application (SPA) built with modern web technologies, providing an interactive map-based interface for airline management.
+
+### Technology Stack
+- **Framework:** React 19 with TypeScript (strict mode)
+- **Build Tool:** Vite 7 with Hot Module Replacement (HMR)
+- **Mapping Library:** React Leaflet 4.2 (wrapper for Leaflet.js)
+- **Tile Provider:** OpenStreetMap raster tiles (https://tile.openstreetmap.org)
+- **Testing:** Vitest 4 + React Testing Library
+- **Code Quality:** ESLint with TypeScript support, strict tsconfig
+
+### Rationale vs. Original Google Maps
+
+The original game used Google Maps JavaScript API for mapping functionality. The rewrite explicitly prohibits Google Maps due to:
+1. **Licensing Costs**: Google Maps API is not free for commercial use
+2. **Vendor Lock-in**: Reduces flexibility and control
+3. **Open Source Alignment**: OSM is community-driven and free
+
+**Migration Path**: React Leaflet was chosen for its:
+- **Simplicity**: Easier to integrate than MapLibre GL for basic marker rendering
+- **Maturity**: Well-documented, large community, stable API
+- **Bundle Size**: Smaller than MapLibre GL for initial use case
+
+**Future Consideration**: MapLibre GL offers better performance for large datasets (> 10K markers) and vector tiles. Migration path exists if needed.
+
+### Architecture Overview
+
+```
+┌─────────────────────────────────────────┐
+│         Frontend (React SPA)            │
+├─────────────────────────────────────────┤
+│  ┌─────────────┐     ┌──────────────┐  │
+│  │   MapView   │     │  SearchBox   │  │
+│  │  (Leaflet)  │     │  (debounced) │  │
+│  └─────────────┘     └──────────────┘  │
+│         │                     │         │
+│  ┌──────▼─────────────────────▼──────┐ │
+│  │      API Client (fetch)            │ │
+│  └────────────────┬───────────────────┘ │
+└───────────────────┼─────────────────────┘
+                    │ HTTP/WS
+          ┌─────────▼──────────┐
+          │  Backend API (Ktor) │
+          │   /api/airports     │
+          │   /api/search       │
+          │   /ws/world (future)│
+          └─────────────────────┘
+```
+
+### Core Components
+
+#### MapView (`src/components/MapView.tsx`)
+- Renders interactive OpenStreetMap with airport markers
+- Supports marker highlighting (selected airport uses blue icon)
+- Popup display with airport details (name, IATA/ICAO, city, country)
+- Fly-to animation when airport is selected
+- Responsive layout (full viewport minus header)
+
+**Future**: Marker clustering, viewport-based lazy loading, route polylines
+
+#### SearchBox (`src/components/SearchBox.tsx`)
+- Debounced search input (300ms) calling `/api/search/airports`
+- Dropdown results with keyboard navigation
+- Abort controller pattern to cancel stale requests
+- "No matches" state for empty results
+
+**Future**: Recent searches, advanced filters, client-side caching
+
+#### App (`src/App.tsx`)
+- Root component managing global state (airports, selection, loading)
+- Pagination control ("Load More" button)
+- Error handling with retry functionality
+- Coordinates SearchBox and MapView interactions
+
+### API Integration
+
+**API Client** (`src/api/airports.ts`):
+- `fetchAirports(params)` - Paginated airport list
+- `searchAirports(params)` - Airport search by query
+
+**Configuration**:
+- Base URL from `VITE_API_BASE_URL` environment variable
+- Dev proxy: `/api/*` → `http://localhost:8080/api/*`
+- AbortSignal support for request cancellation
+
+**CORS Handling**: In development, Vite dev server proxies API requests to avoid CORS issues. In production, use reverse proxy (Nginx/Caddy) or enable CORS in Ktor.
+
+### State Management
+
+**Current**: React built-in hooks (`useState`, `useEffect`) with local component state.
+
+**Future**: When complexity grows (user sessions, multiple views, real-time updates), migrate to:
+- **React Query**: Server state caching, WebSocket integration
+- **Zustand**: Lightweight global state for UI state
+
+### Mapping Features
+
+#### Implemented
+- OSM raster tiles with attribution
+- Airport markers (custom icons for selected/default)
+- Interactive popups with airport details
+- Fly-to animation on selection
+- Responsive map container
+
+#### Future (Marked with `@future` comments)
+- **Marker Clustering**: Use `react-leaflet-markercluster` for > 500 airports
+- **Viewport-based Loading**: Fetch airports only in visible map bounds
+- **Custom Marker Sprites**: Different icons for airport sizes/types
+- **Route Polylines**: Display flight routes between airports
+- **Demand Heatmaps**: Overlay passenger demand data
+
+### WebSocket Support (Placeholder)
+
+A `useWorldSocket` hook stub exists in `src/hooks/useWorldSocket.ts` for future real-time updates:
+- `/ws/world` - Simulation tick, oil prices, events, chat
+- `/ws/airline/{id}` - Airline-specific updates
+
+**Implementation Plan**: Use `reconnecting-websocket` library (as in original), integrate with React Query for state updates.
+
+### Testing Strategy
+
+- **Unit Tests**: API client with mocked `fetch`
+- **Component Tests**: SearchBox (debounce, results), MapView (markers, popups)
+- **Integration Tests (Future)**: E2E with Playwright
+
+**Current Coverage**: 16 tests passing (API client, SearchBox, MapView)
+
+### Build & Deployment
+
+**Development**:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+**Production Build**:
+```bash
+npm run build
+# Output: frontend/dist/
+```
+
+**Deployment Options**:
+1. Static hosting (Cloudflare Pages, Netlify, Vercel)
+2. Serve from Ktor static routes
+3. Nginx reverse proxy
+
+### Performance Considerations
+
+- Initial load limited to 200 airports (configurable)
+- Search debounced (300ms)
+- Request cancellation for stale searches
+- **TODO**: Marker clustering for large datasets
+
+### Browser Support
+
+- Modern evergreen browsers (Chrome, Firefox, Safari, Edge)
+- ES2022 target (no IE11 support)
+- No polyfills required
+
+### Documentation
+
+- [Frontend Overview](./frontend-overview.md) - Detailed component responsibilities and extension points
+- [Frontend README](../frontend/README.md) - Getting started, build commands
+
+### References
+
+- Original JS implementation: `repo-catalogue/airline-web__public__javascripts.md`
+- Backend API: `repo-catalogue/airline-web__app__controllers.md`
+- OSM Tile Policy: https://operations.osmfoundation.org/policies/tiles/
+
+
 ## Real-Time Updates
 
 Real-time communication uses **Ktor WebSockets** (not Server-Sent Events or polling).

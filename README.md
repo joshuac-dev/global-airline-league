@@ -22,15 +22,17 @@ global-airline-league/
 │   ├── persistence/  # Database layer (Exposed + PostgreSQL)
 │   ├── api/          # Ktor REST API + WebSockets
 │   └── jobs/         # Background coroutine-based jobs
+├── frontend/         # React + TypeScript SPA (Vite)
 ├── docs/             # Project documentation
 └── repo-catalogue/   # Original codebase analysis
 ```
 
 ## Prerequisites
 
-- **JDK 17+** (for running the application)
+- **JDK 17+** (for running the backend)
 - **Gradle** (wrapper included)
 - **PostgreSQL 14+** (optional for now; not required for basic health check)
+- **Node.js 20+** and **npm 10+** (for frontend development)
 
 ## Quick Start
 
@@ -187,6 +189,44 @@ Once the database is configured, the following endpoints are available:
 
 **Note:** If the database is not configured, airport endpoints return `503 Service Unavailable`.
 
+## Frontend Development
+
+The frontend is a React + TypeScript single-page application with an interactive OpenStreetMap.
+
+### Setup Frontend
+
+```bash
+cd frontend
+npm install
+```
+
+### Run Frontend Development Server
+
+```bash
+cd frontend
+npm run dev
+```
+
+The frontend will be available at `http://localhost:5173`. API requests are automatically proxied to the backend at `http://localhost:8080`.
+
+### Build Frontend for Production
+
+```bash
+cd frontend
+npm run build
+```
+
+The production build will be output to `frontend/dist/`.
+
+### Frontend Tests
+
+```bash
+cd frontend
+npm test
+```
+
+For more details, see the [Frontend README](./frontend/README.md) and [Frontend Overview](./docs/frontend-overview.md).
+
 ## Development Workflow
 
 ### Build a Specific Module
@@ -211,6 +251,7 @@ Once the database is configured, the following endpoints are available:
 
 ## Key Technologies
 
+### Backend
 - **Language:** Kotlin 2.0.21
 - **Build Tool:** Gradle with Kotlin DSL
 - **Web Framework:** Ktor 2.3.12
@@ -219,6 +260,14 @@ Once the database is configured, the following endpoints are available:
 - **Serialization:** kotlinx-serialization
 - **Concurrency:** Kotlin Coroutines
 - **Testing:** JUnit 5, MockK
+
+### Frontend
+- **Language:** TypeScript (strict mode)
+- **Framework:** React 19
+- **Build Tool:** Vite 7
+- **Mapping:** React Leaflet + OpenStreetMap tiles
+- **Testing:** Vitest 4, React Testing Library
+- **Linting:** ESLint
 
 ## Contributing
 
