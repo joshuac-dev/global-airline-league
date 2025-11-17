@@ -39,7 +39,39 @@ sudo apt install -y git
 git --version
 ```
 
-## Step 4: Install PostgreSQL (Optional)
+## Step 4: Install Node.js and npm
+
+The frontend application requires Node.js 20+ and npm 10+.
+
+```bash
+# Install Node.js 20.x LTS using NodeSource repository
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# Verify installation
+node --version  # Should show v20.x.x
+npm --version   # Should show 10.x.x
+```
+
+Alternatively, you can use `nvm` (Node Version Manager) for easier version management:
+
+```bash
+# Install nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+
+# Reload shell configuration
+source ~/.bashrc
+
+# Install Node.js 20 LTS
+nvm install 20
+nvm use 20
+
+# Verify installation
+node --version
+npm --version
+```
+
+## Step 5: Install PostgreSQL (Optional)
 
 PostgreSQL is optional for initial development (the `/health` endpoint doesn't require it), but you'll need it for full functionality later.
 
@@ -88,7 +120,7 @@ sudo nano /etc/postgresql/14/main/pg_hba.conf
 sudo systemctl restart postgresql
 ```
 
-## Step 5: Clone the Repository
+## Step 6: Clone the Repository
 
 ```bash
 # Create a directory for projects (optional)
@@ -100,7 +132,7 @@ git clone https://github.com/joshuac-dev/global-airline-league.git
 cd global-airline-league
 ```
 
-## Step 6: Build the Project
+## Step 7: Build the Project
 
 The project includes a Gradle wrapper, so you don't need to install Gradle separately.
 
@@ -114,7 +146,7 @@ chmod +x gradlew
 
 The first build will take several minutes as Gradle downloads dependencies.
 
-## Step 7: Run the Application
+## Step 8: Run the Application
 
 ### Start the API Server
 
@@ -139,7 +171,34 @@ Expected response:
 
 To stop the server, press `Ctrl+C` in the terminal where it's running.
 
-## Step 8: Import Airport Data (Optional)
+### Start the Frontend Development Server
+
+Open a new terminal session and navigate to the frontend directory:
+
+```bash
+cd ~/projects/global-airline-league/frontend
+
+# Install dependencies (first time only)
+npm install
+
+# Start the development server
+npm run dev
+```
+
+The frontend will start on `http://localhost:5173` and automatically proxy API requests to the backend server.
+
+### Access the Application
+
+Open your browser and navigate to:
+```
+http://localhost:5173
+```
+
+You should see the Global Airline League frontend with an interactive OpenStreetMap. If the backend database is not configured, you'll see an error message with a retry button. Once you complete Step 9 (Import Airport Data), the map will display airport markers.
+
+To stop the frontend server, press `Ctrl+C` in the terminal where it's running.
+
+## Step 9: Import Airport Data (Optional)
 
 To enable the airport-related API endpoints with real data, you can import airport information from the OurAirports dataset.
 
@@ -208,7 +267,7 @@ curl 'http://localhost:8080/api/airports?country=US&limit=5'
 
 For more details, see the [Airport Import Guide](./dev/airport-import.md).
 
-## Step 9: Configure Environment Variables (Optional)
+## Step 10: Configure Environment Variables (Optional)
 
 The application supports configuration via a `.env` file or system environment variables.
 
