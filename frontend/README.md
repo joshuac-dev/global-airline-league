@@ -4,7 +4,7 @@ This is the frontend application for Global Airline League, built with React, Ty
 
 ## Technology Stack
 
-- **Framework**: React 19 with TypeScript
+- **Framework**: React 18 with TypeScript
 - **Build Tool**: Vite 7
 - **Mapping**: React Leaflet + OpenStreetMap tiles
 - **Testing**: Vitest + React Testing Library

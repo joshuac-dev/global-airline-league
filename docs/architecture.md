@@ -118,7 +118,7 @@ This pattern will be replicated for airlines, routes, aircraft, and other domain
 The frontend is a single-page application (SPA) built with modern web technologies, providing an interactive map-based interface for airline management.
 
 ### Technology Stack
-- **Framework:** React 19 with TypeScript (strict mode)
+- **Framework:** React 18 with TypeScript (strict mode)
 - **Build Tool:** Vite 7 with Hot Module Replacement (HMR)
 - **Mapping Library:** React Leaflet 4.2 (wrapper for Leaflet.js)
 - **Tile Provider:** OpenStreetMap raster tiles (https://tile.openstreetmap.org)

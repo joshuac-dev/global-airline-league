@@ -7,7 +7,7 @@ The Global Airline League frontend is a single-page application (SPA) built with
 ## Technology Stack
 
 ### Core Framework
-- **React 19**: Latest React with concurrent features
+- **React 18**: Stable React with hooks and concurrent features
 - **TypeScript**: Strict mode enabled for type safety
 - **Vite 7**: Fast build tool with HMR
 

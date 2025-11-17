@@ -263,7 +263,7 @@ For more details, see the [Frontend README](./frontend/README.md) and [Frontend 
 
 ### Frontend
 - **Language:** TypeScript (strict mode)
-- **Framework:** React 19
+- **Framework:** React 18
 - **Build Tool:** Vite 7
 - **Mapping:** React Leaflet + OpenStreetMap tiles
 - **Testing:** Vitest 4, React Testing Library
