@@ -2,9 +2,9 @@
 
 CREATE TABLE routes (
     id SERIAL PRIMARY KEY,
-    airline_id BIGINT NOT NULL REFERENCES airlines(id) ON DELETE CASCADE,
-    origin_airport_id BIGINT NOT NULL REFERENCES airports(id) ON DELETE CASCADE,
-    destination_airport_id BIGINT NOT NULL REFERENCES airports(id) ON DELETE CASCADE,
+    airline_id INTEGER NOT NULL REFERENCES airlines(id) ON DELETE CASCADE,
+    origin_airport_id INTEGER NOT NULL REFERENCES airports(id) ON DELETE CASCADE,
+    destination_airport_id INTEGER NOT NULL REFERENCES airports(id) ON DELETE CASCADE,
     distance_km INT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
