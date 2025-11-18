@@ -32,7 +32,11 @@ Start the development server with hot module replacement:
 npm run dev
 ```
 
-The application will be available at `http://localhost:5173`. API requests to `/api/*` are automatically proxied to the backend at `http://localhost:8080`.
+The application will be available at:
+- Local: `http://localhost:5173`
+- Network: `http://<your-ip>:5173` (e.g., `http://10.0.10.49:5173`)
+
+API requests to `/api/*` are automatically proxied to the backend at `http://localhost:8080`.
 
 ### Build
 

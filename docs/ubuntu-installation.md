@@ -185,14 +185,17 @@ npm install
 npm run dev
 ```
 
-The frontend will start on `http://localhost:5173` and automatically proxy API requests to the backend server.
+The frontend will start and be accessible at:
+- Local: `http://localhost:5173`
+- Network: `http://<your-server-ip>:5173` (accessible from other devices on your network)
+
+The dev server automatically proxies API requests to the backend server.
 
 ### Access the Application
 
 Open your browser and navigate to:
-```
-http://localhost:5173
-```
+- From the same machine: `http://localhost:5173`
+- From another device on the network: `http://<your-server-ip>:5173`
 
 You should see the Global Airline League frontend with an interactive OpenStreetMap. If the backend database is not configured, you'll see an error message with a retry button. Once you complete Step 9 (Import Airport Data), the map will display airport markers.
 
