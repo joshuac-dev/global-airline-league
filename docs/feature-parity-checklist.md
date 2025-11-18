@@ -178,11 +178,13 @@ Track the game clock and orchestrate simulation updates.
 ## Maps & Visualizations
 
 ### OpenStreetMap Integration
-- ❌ Frontend map component (Leaflet or MapLibre)
-- ❌ OSM tile loading (self-hosted or public tiles)
-- ❌ Airport markers with popups
-- ❌ Route polylines (flight paths)
-- ❌ Interactive controls (zoom, pan, search)
+- 🚧 **Frontend SPA bootstrap & OSM airport markers** ([This PR](link-to-pr))
+  - ✅ Frontend map component (React Leaflet)
+  - ✅ OSM tile loading (public tiles with attribution)
+  - ✅ Airport markers with popups
+  - ✅ Interactive controls (zoom, pan, search)
+  - ❌ Route polylines (flight paths)
+- ❌ Self-hosted OSM tile server (future performance optimization)
 
 ### Data Visualizations
 - ❌ Heatmaps (demand, coverage)
@@ -256,19 +258,27 @@ Track the game clock and orchestrate simulation updates.
 ## Frontend Application
 
 ### SPA Scaffolding
-- ❌ React + TypeScript project setup
-- ❌ Routing (React Router)
-- ❌ State management (Redux, Zustand, or Context)
-- ❌ API client (fetch or axios with types)
+- 🚧 **Frontend SPA bootstrap** ([This PR](link-to-pr))
+  - ✅ React + TypeScript project setup (Vite)
+  - ✅ Routing (single page view; React Router deferred)
+  - ✅ State management (React hooks; global state deferred)
+  - ✅ API client (fetch with TypeScript types)
+  - ✅ Testing infrastructure (Vitest + React Testing Library)
+  - ✅ Build and dev scripts
+  - ✅ ESLint + TypeScript strict mode configuration
 
 ### Core Views
+- 🚧 **Map view** ([This PR](link-to-pr))
+  - ✅ OSM map with airport markers
+  - ✅ Airport search and fly-to functionality
+  - ❌ Route visualization
+  - ❌ Heatmaps
 - ❌ Dashboard / Home
 - ❌ Airline management
 - ❌ Route planning
 - ❌ Fleet management
 - ❌ Finance view
 - ❌ Rankings / Leaderboards
-- ❌ Map view
 
 ### UI Components
 - ❌ Component library (or custom components)
@@ -286,16 +296,22 @@ Track the game clock and orchestrate simulation updates.
 - ❌ Frontend dev server with HMR
 
 ### Testing
-- ❌ Unit test suite for core logic
-- ❌ Integration tests for persistence
-- ❌ API tests with Ktor test utilities
-- ❌ Testcontainers for database tests
-- ❌ Frontend unit tests (Jest/Vitest)
-- ❌ E2E tests (Playwright or Cypress)
+- 🚧 **Frontend tests** ([This PR](link-to-pr))
+  - ✅ Unit test suite for API client
+  - ✅ Component tests with React Testing Library
+  - ✅ Vitest configuration and setup
+  - ❌ E2E tests (Playwright or Cypress)
+- ❌ Unit test suite for core logic (backend)
+- ❌ Integration tests for persistence (backend)
+- ❌ API tests with Ktor test utilities (backend)
+- ❌ Testcontainers for database tests (backend)
 
 ### Linting & Code Quality
 - ❌ Kotlin linting (detekt or ktlint)
-- ❌ TypeScript linting (ESLint)
+- 🚧 **Frontend linting** ([This PR](link-to-pr))
+  - ✅ TypeScript linting (ESLint with TypeScript plugin)
+  - ✅ TypeScript strict mode
+  - ✅ EditorConfig for consistent formatting
 - ❌ Code formatting (Prettier for frontend, ktfmt for backend)
 - ❌ Pre-commit hooks
 

@@ -1,0 +1,25 @@
+.map-container {
+  width: 100%;
+  height: calc(100vh - 60px); /* Full viewport minus header */
+  position: relative;
+}
+
+.airport-popup h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.airport-popup p {
+  margin: 4px 0;
+  font-size: 14px;
+}
+
+.airport-popup strong {
+  font-weight: 600;
+}
+
+/* Ensure map tiles load properly */
+.leaflet-container {
+  background: #aad3df;
+}
