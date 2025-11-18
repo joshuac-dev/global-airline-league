@@ -54,4 +54,28 @@ interface RouteRepository {
      * @return true if the route was deleted, false if it didn't exist
      */
     suspend fun delete(id: RouteId): Boolean
+    
+    /**
+     * List all routes with pagination.
+     * @param offset Starting position (0-based)
+     * @param limit Maximum number of results
+     * @return List of routes
+     */
+    suspend fun listAll(
+        offset: Int = 0,
+        limit: Int = 50
+    ): List<Route>
+    
+    /**
+     * List all routes that touch a specific airport (as origin or destination).
+     * @param airportId The airport ID
+     * @param offset Starting position (0-based)
+     * @param limit Maximum number of results
+     * @return List of routes
+     */
+    suspend fun listByAirport(
+        airportId: AirportId,
+        offset: Int = 0,
+        limit: Int = 50
+    ): List<Route>
 }

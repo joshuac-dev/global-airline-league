@@ -116,6 +116,31 @@ class RouteRepositoryExposed : RouteRepository {
         Routes.deleteWhere { Routes.id eq id.value.toInt() } > 0
     }
 
+    override suspend fun listAll(
+        offset: Int,
+        limit: Int
+    ): List<Route> = dbQuery {
+        Routes.selectAll()
+            .orderBy(Routes.id)
+            .limit(limit, offset.toLong())
+            .map { toRoute(it) }
+    }
+
+    override suspend fun listByAirport(
+        airportId: AirportId,
+        offset: Int,
+        limit: Int
+    ): List<Route> = dbQuery {
+        Routes.selectAll()
+            .where { 
+                (Routes.originAirportId eq airportId.value.toInt()) or
+                (Routes.destinationAirportId eq airportId.value.toInt())
+            }
+            .orderBy(Routes.id)
+            .limit(limit, offset.toLong())
+            .map { toRoute(it) }
+    }
+
     private fun toRoute(row: ResultRow): Route {
         return Route(
             id = RouteId(row[Routes.id].toLong()),

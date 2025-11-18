@@ -33,15 +33,9 @@ class ApplicationTest {
 
     @Test
     fun testNotImplementedEndpoints() = testApplication {
-        // Test that placeholder routes return 501 Not Implemented
-        val endpoints = listOf(
-            "/api/routes"
-        )
-
-        endpoints.forEach { endpoint ->
-            val response = client.get(endpoint)
-            assertEquals(HttpStatusCode.NotImplemented, response.status, "Expected 501 for $endpoint")
-        }
+        // Routes endpoint is now implemented and returns 503 when DB is unavailable
+        val response = client.get("/api/routes")
+        assertEquals(HttpStatusCode.ServiceUnavailable, response.status)
     }
     
     @Test

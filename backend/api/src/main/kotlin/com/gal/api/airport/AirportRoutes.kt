@@ -1,5 +1,7 @@
 package com.gal.api.airport
 
+import com.gal.api.route.RouteRepositoryLocator
+import com.gal.api.route.toResponse
 import com.gal.core.AirportId
 import com.gal.core.airport.CountryCode
 import io.ktor.http.*
@@ -52,6 +54,42 @@ fun Route.airportRoutes() {
             } else {
                 call.respond(airport.toResponse())
             }
+        }
+        
+        // GET /api/airports/{id}/routes
+        get("/{id}/routes") {
+            val airportRepository = RepositoryLocator.getAirportRepository()
+            val routeRepository = RouteRepositoryLocator.getRouteRepository()
+            
+            if (airportRepository == null || routeRepository == null) {
+                call.respond(HttpStatusCode.ServiceUnavailable, ErrorResponse("database unavailable"))
+                return@get
+            }
+            
+            val id = call.parameters["id"]?.toLongOrNull()
+            if (id == null || id <= 0) {
+                call.respond(HttpStatusCode.BadRequest, ErrorResponse("invalid airport id"))
+                return@get
+            }
+            
+            // Check if airport exists
+            val airport = airportRepository.get(AirportId(id))
+            if (airport == null) {
+                call.respond(HttpStatusCode.NotFound, ErrorResponse("airport not found"))
+                return@get
+            }
+            
+            val offset = call.request.queryParameters["offset"]?.toIntOrNull() ?: 0
+            val limit = call.request.queryParameters["limit"]?.toIntOrNull() ?: 50
+            
+            // Validate pagination parameters
+            if (offset < 0 || limit < 1 || limit > 100) {
+                call.respond(HttpStatusCode.BadRequest, ErrorResponse("invalid pagination parameters"))
+                return@get
+            }
+            
+            val routes = routeRepository.listByAirport(AirportId(id), offset, limit)
+            call.respond(routes.map { it.toResponse() })
         }
     }
     
