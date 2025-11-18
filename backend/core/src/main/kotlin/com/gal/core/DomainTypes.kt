@@ -39,3 +39,14 @@ value class AirportId(val value: Long) {
         require(value > 0) { "Airport ID must be positive" }
     }
 }
+
+/**
+ * Type-safe route identifier.
+ */
+@Serializable
+@JvmInline
+value class RouteId(val value: Long) {
+    init {
+        require(value > 0) { "Route ID must be positive" }
+    }
+}
