@@ -36,19 +36,90 @@ global-airline-league/
 
 ## Quick Start
 
-### Build the Project
+### Automated Setup (Recommended)
+
+The easiest way to get started is using the automated setup script:
 
 ```bash
-./gradlew build
+./setup-dev.sh
 ```
 
-### Run the API Server
+This script will:
+- Start a PostgreSQL database in Docker
+- Create the `.env` configuration file
+- Build the backend
+- Run database migrations
+- Seed test airport data
+
+After setup completes:
 
 ```bash
+# Terminal 1: Start the backend
+./gradlew :backend:api:run
+
+# Terminal 2: Start the frontend
+cd frontend
+npm install
+npm run dev
+```
+
+Then open http://localhost:5173 in your browser.
+
+### Manual Setup
+
+If you prefer to set up manually or don't have Docker:
+
+#### 1. Set up PostgreSQL
+
+Install PostgreSQL 14+ and create the database:
+
+```bash
+# Create database and user
+sudo -u postgres psql
+```
+
+```sql
+CREATE DATABASE gal;
+CREATE USER gal WITH ENCRYPTED PASSWORD 'gal';
+GRANT ALL PRIVILEGES ON DATABASE gal TO gal;
+\q
+```
+
+#### 2. Configure Environment
+
+Create a `.env` file:
+
+```bash
+cp .env.example .env
+```
+
+Edit if needed to match your database setup.
+
+#### 3. Build and Run
+
+```bash
+# Build the project
+./gradlew build
+
+# Run the API Server (migrations run automatically)
 ./gradlew :backend:api:run
 ```
 
-The server will start on `http://localhost:8080` (or port specified by `PORT` env var).
+The server will start on `http://localhost:8080`.
+
+#### 4. Seed Test Data
+
+```bash
+psql -U gal -d gal < docs/dev/seed_airports.sql
+```
+
+#### 5. Run Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
 ### Test the Health Endpoint
 
