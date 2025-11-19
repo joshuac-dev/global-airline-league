@@ -2,6 +2,25 @@
 
 A web-based airline MMORPG built with Kotlin, Ktor, and PostgreSQL.
 
+## ⚠️ Getting "Failed to fetch airports" Error?
+
+If you see an error banner on the Map page, your database isn't set up yet. Run:
+
+```bash
+./check-env.sh    # Diagnose what's missing
+./setup-dev.sh    # Automated setup
+```
+
+Then start the services (in separate terminals):
+```bash
+./gradlew :backend:api:run              # Terminal 1: Backend
+cd frontend && npm install && npm run dev   # Terminal 2: Frontend
+```
+
+See [Troubleshooting Guide](./docs/TROUBLESHOOTING.md) for detailed help.
+
+---
+
 ## Overview
 
 Global Airline League is a modular monolithic application where players manage virtual airlines, create routes, purchase aircraft, and compete in a real-time simulation. This is a rewrite of the original Scala/Play Framework game, modernized with Kotlin and organized as a clean, maintainable codebase.
@@ -36,19 +55,107 @@ global-airline-league/
 
 ## Quick Start
 
-### Build the Project
+### Step 1: Check Your Environment (Optional)
+
+Run the diagnostic script to see what's already set up:
 
 ```bash
-./gradlew build
+./check-env.sh
 ```
 
-### Run the API Server
+This will check if PostgreSQL, backend, and frontend are configured and running.
+
+### Step 2: Automated Setup (Recommended)
+
+The easiest way to get started is using the automated setup script:
 
 ```bash
+./setup-dev.sh
+```
+
+This script will:
+- Detect if PostgreSQL is already running
+- Start a PostgreSQL database in Docker (or guide you to use existing installation)
+- Create the `.env` configuration file
+- Build the backend
+- Run database migrations
+- Seed 15 test airports
+
+### Step 3: Start the Services
+
+After setup completes, start both services (use separate terminals):
+
+```bash
+# Terminal 1: Start the backend
+./gradlew :backend:api:run
+
+# Terminal 2: Start the frontend
+cd frontend
+npm install
+npm run dev
+```
+
+### Step 4: Open the Application
+
+Open http://localhost:5173 in your browser. You should see a map with airport markers.
+
+**Troubleshooting:** If you see "Failed to fetch airports", run `./check-env.sh` to diagnose the issue.
+
+### Manual Setup
+
+If you prefer to set up manually or don't have Docker:
+
+#### 1. Set up PostgreSQL
+
+Install PostgreSQL 14+ and create the database:
+
+```bash
+# Create database and user
+sudo -u postgres psql
+```
+
+```sql
+CREATE DATABASE gal;
+CREATE USER gal WITH ENCRYPTED PASSWORD 'gal';
+GRANT ALL PRIVILEGES ON DATABASE gal TO gal;
+\q
+```
+
+#### 2. Configure Environment
+
+Create a `.env` file:
+
+```bash
+cp .env.example .env
+```
+
+Edit if needed to match your database setup.
+
+#### 3. Build and Run
+
+```bash
+# Build the project
+./gradlew build
+
+# Run the API Server (migrations run automatically)
 ./gradlew :backend:api:run
 ```
 
-The server will start on `http://localhost:8080` (or port specified by `PORT` env var).
+The server will start on `http://localhost:8080`.
+
+#### 4. Seed Test Data
+
+```bash
+psql -U gal -d gal < docs/dev/seed_airports.sql
+```
+
+#### 5. Run Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
 ### Test the Health Endpoint
 
