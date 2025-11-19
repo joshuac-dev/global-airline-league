@@ -2,6 +2,25 @@
 
 A web-based airline MMORPG built with Kotlin, Ktor, and PostgreSQL.
 
+## ⚠️ Getting "Failed to fetch airports" Error?
+
+If you see an error banner on the Map page, your database isn't set up yet. Run:
+
+```bash
+./check-env.sh    # Diagnose what's missing
+./setup-dev.sh    # Automated setup
+```
+
+Then start the services (in separate terminals):
+```bash
+./gradlew :backend:api:run              # Terminal 1: Backend
+cd frontend && npm install && npm run dev   # Terminal 2: Frontend
+```
+
+See [Troubleshooting Guide](./docs/TROUBLESHOOTING.md) for detailed help.
+
+---
+
 ## Overview
 
 Global Airline League is a modular monolithic application where players manage virtual airlines, create routes, purchase aircraft, and compete in a real-time simulation. This is a rewrite of the original Scala/Play Framework game, modernized with Kotlin and organized as a clean, maintainable codebase.
@@ -36,7 +55,17 @@ global-airline-league/
 
 ## Quick Start
 
-### Automated Setup (Recommended)
+### Step 1: Check Your Environment (Optional)
+
+Run the diagnostic script to see what's already set up:
+
+```bash
+./check-env.sh
+```
+
+This will check if PostgreSQL, backend, and frontend are configured and running.
+
+### Step 2: Automated Setup (Recommended)
 
 The easiest way to get started is using the automated setup script:
 
@@ -45,13 +74,16 @@ The easiest way to get started is using the automated setup script:
 ```
 
 This script will:
-- Start a PostgreSQL database in Docker
+- Detect if PostgreSQL is already running
+- Start a PostgreSQL database in Docker (or guide you to use existing installation)
 - Create the `.env` configuration file
 - Build the backend
 - Run database migrations
-- Seed test airport data
+- Seed 15 test airports
 
-After setup completes:
+### Step 3: Start the Services
+
+After setup completes, start both services (use separate terminals):
 
 ```bash
 # Terminal 1: Start the backend
@@ -63,7 +95,11 @@ npm install
 npm run dev
 ```
 
-Then open http://localhost:5173 in your browser.
+### Step 4: Open the Application
+
+Open http://localhost:5173 in your browser. You should see a map with airport markers.
+
+**Troubleshooting:** If you see "Failed to fetch airports", run `./check-env.sh` to diagnose the issue.
 
 ### Manual Setup
 
