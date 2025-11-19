@@ -195,16 +195,90 @@ npm run dev
 ## Docker container won't start
 
 ### Symptoms
-- `docker start gal-postgres` fails
-- Port 5432 already in use
+- `docker run` fails with "address already in use"
+- Port 5432 already in use error
+- Setup script reports port conflict
+
+### Root Cause
+Another PostgreSQL instance is already running on port 5432 (either system PostgreSQL or another Docker container).
 
 ### Solution
 
-**Check if another PostgreSQL is using port 5432:**
+**Option 1: Use existing PostgreSQL (Recommended)**
+
+If you already have PostgreSQL installed on your system, use it instead of Docker:
+
+1. **Check if PostgreSQL is running:**
+   ```bash
+   # Linux
+   sudo systemctl status postgresql
+   
+   # macOS
+   brew services list | grep postgresql
+   ```
+
+2. **Create the database and user:**
+   ```bash
+   sudo -u postgres psql  # Linux
+   psql postgres          # macOS
+   ```
+   
+   Then in the psql prompt:
+   ```sql
+   CREATE DATABASE gal;
+   CREATE USER gal WITH PASSWORD 'gal';
+   GRANT ALL PRIVILEGES ON DATABASE gal TO gal;
+   \q
+   ```
+
+3. **Re-run setup script:**
+   ```bash
+   ./setup-dev.sh
+   ```
+   
+   When prompted about port 5432 being in use, choose "y" to use existing PostgreSQL.
+
+**Option 2: Stop system PostgreSQL and use Docker**
 
 ```bash
+# Linux
+sudo systemctl stop postgresql
+
+# macOS
+brew services stop postgresql
+```
+
+Then re-run the setup script:
+```bash
+./setup-dev.sh
+```
+
+**Option 3: Use a different port for Docker**
+
+Manually start Docker PostgreSQL on a different port:
+
+```bash
+docker run -d --name gal-postgres \
+  -e POSTGRES_USER=gal \
+  -e POSTGRES_PASSWORD=gal \
+  -e POSTGRES_DB=gal \
+  -p 5433:5432 \
+  postgres:14
+
+# Update .env to use the new port
+DB_URL=jdbc:postgresql://localhost:5433/gal
+```
+
+**Check which process is using port 5432:**
+
+```bash
+# Linux/macOS
 lsof -i :5432
-# or
+
+# Linux alternative
+ss -ltnp | grep 5432
+
+# macOS alternative
 netstat -an | grep 5432
 ```
 
@@ -214,18 +288,14 @@ sudo systemctl stop postgresql  # Linux
 brew services stop postgresql@14  # macOS
 ```
 
-**Option B: Use different port for Docker**
+Then re-run:
 ```bash
-docker run -d --name gal-postgres \
-  -e POSTGRES_USER=gal \
-  -e POSTGRES_PASSWORD=gal \
-  -e POSTGRES_DB=gal \
-  -p 5433:5432 \
-  postgres:14
-
-# Update .env
-DB_URL=jdbc:postgresql://localhost:5433/gal
+./setup-dev.sh
 ```
+
+**Option B: Use existing PostgreSQL**
+
+See "Docker container won't start" section above for instructions on using your existing PostgreSQL installation.
 
 ---
 
