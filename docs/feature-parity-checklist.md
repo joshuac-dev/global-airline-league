@@ -48,12 +48,21 @@ Track the game clock and orchestrate simulation updates.
 - ❌ Configuration (seats by class)
 
 ### Routes & Links
-- ❌ Link/route entity (origin, destination, frequency)
-- ❌ Link capacity and pricing by class
-- ❌ Route assignment to aircraft
-- ❌ Passenger assignment and load factor
-- ❌ Link profitability calculation
-- ❌ Link history and performance tracking
+- 🚧 **Routes – identity & CRUD** ([This PR](link-to-pr))
+  - ✅ Route entity (origin, destination, distance calculation)
+  - ✅ Persistence layer with Exposed + PostgreSQL
+  - ✅ Unique constraint per airline (airline_id, origin, destination)
+  - ✅ Distance calculation using DistanceCalculator
+  - ✅ CRUD API endpoints (POST, GET, DELETE)
+  - ✅ Airport-centric route listing endpoint
+  - ✅ Frontend Routes page (list, create, delete)
+  - ❌ Link capacity and pricing by class (TODO)
+  - ❌ Route assignment to aircraft (TODO)
+  - ❌ Passenger assignment and load factor (TODO)
+  - ❌ Link profitability calculation (TODO)
+  - ❌ Link history and performance tracking (TODO)
+- ❌ Flight time calculation and scheduling
+- ❌ Route optimization and network planning tools
 
 ### Passengers & Demand
 - ❌ Passenger demand modeling by airport pair
@@ -195,14 +204,15 @@ Track the game clock and orchestrate simulation updates.
 ## API Endpoints
 
 ### REST API
-- ❌ `/api/airlines` - CRUD operations
+- ❌ `/api/airlines` - CRUD operations (GET list, GET by id implemented; POST pending)
 - ✅ `/api/airports` - List, search, details (GET list, GET by id implemented)
-- ❌ `/api/routes` - Link management
+- ✅ `/api/routes` - Link management (CRUD fully implemented)
+- ✅ `/api/airports/{id}/routes` - Airport route listing
 - ❌ `/api/aircraft` - Fleet management
 - ✅ `/api/search/airports` - Full-text search for airports
 - ❌ `/api/alliances` - Alliance operations
 - ❌ `/api/rankings` - Leaderboards
-- ❌ `/health` - Health check ✅ (implemented in initial PR)
+- ✅ `/health` - Health check (implemented in initial PR)
 
 ### WebSocket API
 - ❌ `/ws/world` - Global updates
@@ -268,14 +278,20 @@ Track the game clock and orchestrate simulation updates.
   - ✅ ESLint + TypeScript strict mode configuration
 
 ### Core Views
-- 🚧 **Map view** ([This PR](link-to-pr))
+- 🚧 **Map view** ([Initial PR](link-to-pr))
   - ✅ OSM map with airport markers
   - ✅ Airport search and fly-to functionality
   - ❌ Route visualization
   - ❌ Heatmaps
+- 🚧 **Routes management** ([This PR](link-to-pr))
+  - ✅ List routes for an airline
+  - ✅ Create new routes with airport selection
+  - ✅ Delete routes
+  - ✅ Display computed distance
+  - ❌ Route pricing and capacity configuration
+  - ❌ Route visualization on map
 - ❌ Dashboard / Home
 - ❌ Airline management
-- ❌ Route planning
 - ❌ Fleet management
 - ❌ Finance view
 - ❌ Rankings / Leaderboards

@@ -1,0 +1,159 @@
+.routes-page {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.routes-page h1 {
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.airline-selector {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.airline-selector label {
+  margin-right: 1rem;
+  font-weight: bold;
+}
+
+.airline-selector input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100px;
+}
+
+.message {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
+
+.message.error {
+  background: #fee;
+  border: 1px solid #fcc;
+  color: #c33;
+}
+
+.message.success {
+  background: #efe;
+  border: 1px solid #cfc;
+  color: #3c3;
+}
+
+.create-route-section {
+  margin-bottom: 3rem;
+  padding: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fafafa;
+}
+
+.create-route-section h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.create-route-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-group select,
+.form-group input {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.create-route-form button {
+  padding: 0.75rem 1.5rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.create-route-form button:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.create-route-form button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.routes-list-section {
+  margin-top: 2rem;
+}
+
+.routes-list-section h2 {
+  margin-bottom: 1rem;
+}
+
+.no-routes {
+  color: #666;
+  font-style: italic;
+}
+
+.routes-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.routes-table th {
+  background: #f5f5f5;
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+  font-weight: 600;
+}
+
+.routes-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+
+.routes-table tr:hover {
+  background: #fafafa;
+}
+
+.delete-button {
+  padding: 0.5rem 1rem;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.delete-button:hover:not(:disabled) {
+  background: #c82333;
+}
+
+.delete-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}

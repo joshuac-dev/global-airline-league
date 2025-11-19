@@ -4,6 +4,8 @@ import com.gal.api.airline.AirlineRepositoryLocator
 import com.gal.api.airline.airlineRoutes
 import com.gal.api.airport.RepositoryLocator
 import com.gal.api.airport.airportRoutes
+import com.gal.api.route.RouteRepositoryLocator
+import com.gal.api.route.routeRoutes
 import com.gal.persistence.DatabaseFactory
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -31,6 +33,7 @@ fun Application.module() {
             DatabaseFactory.init()
             RepositoryLocator.initialize()
             AirlineRepositoryLocator.initialize()
+            RouteRepositoryLocator.initialize()
         } catch (e: Exception) {
             log.warn("Failed to initialize database: ${e.message}")
             // Continue without database - API will return 503 for database-dependent endpoints
@@ -89,11 +92,8 @@ fun Application.module() {
             // Airline routes (implemented)
             airlineRoutes()
 
-            route("/routes") {
-                get {
-                    call.respond(HttpStatusCode.NotImplemented, "Routes API not yet implemented")
-                }
-            }
+            // Route routes (implemented)
+            routeRoutes()
         }
 
         // Placeholder WebSocket endpoints
